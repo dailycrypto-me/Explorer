@@ -1,0 +1,111 @@
+version: 2.1
+
+orbs:
+  helm-release: daily/helm-release@0.1.1
+
+jobs:
+
+  build-and-push-docker-image:
+    environment:
+      - IMAGE: explorer
+      - DOCKERHUB_IMAGE: daily/explorer
+    machine:
+      image: ubuntu-2004:202010-01
+      docker_layer_caching: true
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Prepare Environment
+          command: |
+            echo "export GCP_IMAGE=gcr.io/${GOOGLE_PROJECT_ID}/${IMAGE}" >> $BASH_ENV
+            echo "export START_TIME=$(date +%Y%m%d-%Hh%Mm%Ss)" >> $BASH_ENV
+            echo "export TIMESTAMP=$(date +%s)" >>$BASH_ENV
+            echo "export VERSION=$(grep -m1 version package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g')" >> $BASH_ENV
+
+      - run:
+          name: Login into gcr
+          command: |
+            echo ${GCLOUD_SERVICE_KEY} | docker login -u _json_key --password-stdin https://gcr.io
+
+      - run:
+          name: Login into docker hub
+          command: |
+            echo ${DOCKERHUB_PASS} | docker login -u daily --password-stdin
+
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t ${IMAGE}:${CIRCLE_BUILD_NUM} -f Dockerfile .
+
+      - run:
+          name: Tag images and push images
+          command: |
+            docker tag ${IMAGE}:${CIRCLE_BUILD_NUM} ${GCP_IMAGE}:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}-${TIMESTAMP}
+            docker tag ${IMAGE}:${CIRCLE_BUILD_NUM} ${DOCKERHUB_IMAGE}:${VERSION}-${CIRCLE_BUILD_NUM}
+            docker tag ${IMAGE}:${CIRCLE_BUILD_NUM} ${DOCKERHUB_IMAGE}:latest
+            docker tag ${IMAGE}:${CIRCLE_BUILD_NUM} ${GCP_IMAGE}:latest
+
+            if [[ ${CIRCLE_BRANCH} == "develop"   ]]; then
+              docker push ${GCP_IMAGE}:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}-${TIMESTAMP}
+              docker push ${GCP_IMAGE}:latest
+            fi
+            if [[ ${CIRCLE_BRANCH} == "master" ]]; then
+              docker push ${DOCKERHUB_IMAGE}:${VERSION}-${CIRCLE_BUILD_NUM}
+              docker push ${DOCKERHUB_IMAGE}:latest
+            fi
+
+workflows:
+  version: 2
+
+  build-and-package:
+    jobs:
+      - build-and-push-docker-image:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+          context:
+            - DAILY
+            - K8S
+            - GCR
+            - DOCKERHUB
+
+  # run this workflow for branches specified below
+  build-helm-chart:
+    jobs:
+      - helm-release/chart-publish:
+          develop: true # means, that this is development release, no-verify and artifact -> ${HELMCHART_VERSION}-sha.${SHORT_GIT_HASH}
+          charts-dir: charts
+          chart-name: explorer
+          chartmuseum-url: https://charts.gcp.daily.io
+          chartmuseum-username: HELM_REPO_USERNAME
+          chartmuseum-password: HELM_REPO_PASSWORD
+          context:
+            - CHARTSREPO
+          filters:
+            branches:
+              only: 
+              - /^chart\/.*/
+              - /^chore\/chart-.*/
+              - /^fix\/chart-.*/
+              - /^feature\/chart-.*/
+
+
+  # run this workflow for tags, like chart-vX.Y.Z
+  release-helm-chart:
+    jobs:
+      - helm-release/chart-publish:
+          charts-dir: charts
+          chart-name: explorer
+          chartmuseum-url: https://charts.gcp.daily.io
+          chartmuseum-username: HELM_REPO_USERNAME
+          chartmuseum-password: HELM_REPO_PASSWORD
+          context:
+            - CHARTSREPO
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^chart-v\d+.\d+.\d+/

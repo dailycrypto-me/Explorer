@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  explorer-sync:
+    container_name: explorer-sync
+    build:
+      context: .
+    restart: always
+    env_file: .env
+    environment:
+      RPC_HTTP_PROVIDER: ${RPC_HTTP_PROVIDER}
+      RPC_WS_PROVIDER: ${RPC_WS_PROVIDER}
+      MONGO_URI: ${MONGO_URI}
+    command: ['node', './worker/blockchain-sync', '-c', '/var/daily/conf/private.json']
+    volumes:
+      - ./node-config:/var/daily/conf
+  explorer:
+    container_name: explorer
+    build:
+      context: .
+    restart: always
+    env_file: .env
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      NEXT_PUBLIC_EXPLORER_WS: ${NEXT_PUBLIC_EXPLORER_WS}
+    ports:
+      - '3000:3000'
+    command: ['npm', 'run', 'start-docker-compose']
+  address-stats:
+    container_name: address-stats
+    build:
+      context: .
+    restart: always
+    env_file: .env
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      NEXT_PUBLIC_EXPLORER_WS: ${NEXT_PUBLIC_EXPLORER_WS}
+    command: ['npm', 'run', 'address-stats']
+  explorer-ws:
+    container_name: explorer-ws
+    build:
+      context: .
+    restart: always
+    env_file: .env
+    environment:
+      MONGO_URI: ${MONGO_URI}
+    ports:
+      - '3001:3001'
+    command: ['node', './ws-server']
+  faucet:
+    container_name: faucet
+    build:
+      context: .
+    restart: always
+    env_file: .env
+    environment:
+      RPC_HTTP_PROVIDER: ${RPC_HTTP_PROVIDER}
+      RPC_WS_PROVIDER: ${RPC_WS_PROVIDER}
+      MONGO_URI: ${MONGO_URI}
+    command: ['node', './worker/faucet']
