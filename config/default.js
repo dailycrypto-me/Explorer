@@ -1,7 +1,7 @@
 module.exports = {
   nodeConfigPath: process.env.NODE_CONFIG_PATH || '/opt/daily/conf/daily.json',
   faucet: {
-    enabled: process.env.NEXT_PUBLIC_FAUCET_ENABLED === 'true',
+    enabled: process.env.NEXT_PUBLIC_FAUCET_ENABLED === 'false',
     maxUnconfirmed: Number(process.env.MAX_UNCONFIRMED) || 5000,
     //default address 0xde2b1203d72d3549EE2f733b00b2789414C7Cea5
     dripInterval: Number(process.env.DRIP_INTERVAL_MS) || 500,
@@ -11,7 +11,7 @@ module.exports = {
   },
   delegate: {
     trustedAddress:
-      process.env.DELEGATE_TRUSTED_ADDRESS || '0xfee090788d8eb89c63cdcf76c1d385446d766556',
+      process.env.DELEGATE_TRUSTED_ADDRESS || '0x5df3b8e6b96e59099d16252a55f87ac34767806c',
     ownNodes: process.env.DELEGATION_OWN_NODES || null,
   },
   mongo: {
