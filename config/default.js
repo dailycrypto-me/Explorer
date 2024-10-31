@@ -1,5 +1,5 @@
 module.exports = {
-  nodeConfigPath: process.env.NODE_CONFIG_PATH || '/root/.daily/config.json',
+  nodeConfigPath: process.env.NODE_CONFIG_PATH || '/opt/daily/conf/daily.json',
   faucet: {
     enabled: process.env.NEXT_PUBLIC_FAUCET_ENABLED === 'false',
     maxUnconfirmed: Number(process.env.MAX_UNCONFIRMED) || 5000,
