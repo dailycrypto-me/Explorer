@@ -16,7 +16,7 @@
   "network_boot_nodes": [
     {
       "ip": "127.0.0.1",
-      "id": "7b1fcf0ec1078320117b96e9e9ad9032c06d030cf4024a598347a4623a14a421d4f030cf25ef368ab394a45e920e14b57a259a09c41767dd50d1da27b627412a",
+      "id": "55b06f43b01fd15994415be0184fe5b9be60a9e262669602fe20e3b1b12cd6c0197420e6ea110b4a1392a05f78c786fc1cd43352a9877a3e29383faf5598bb32",
       "tcp_port": 10002,
       "udp_port": 10002
     }
@@ -96,31 +96,34 @@
     ]
   },
   "chain_config": {
-    "chain_id": "0xd903",
+    "chain_id": "0x339",
     "dag_genesis_block": {
       "hash": "0xc9524784c4bf29e6facdd94ef7d214b9f512cdfd0f68184432dab85d053cbc69",
       "level": "0x0",
       "pivot": "0x0000000000000000000000000000000000000000000000000000000000000000",
-      "sender": "0xde2b1203d72d3549ee2f733b00b2789414c7cea5",
+      "sender": "7D351907D349211f94301bae7db5bFa421AA5937",
       "sig": "0xb7e22d46c1ba94d5e8347b01d137b5c428fcbbeaf0a77fb024cbbf1517656ff00d04f7f25be608c321b0d7483c402c294ff46c49b265305d046a52236c0a363701",
-      "timestamp": "0x5d422b80",
+      "timestamp": "0x6723F7D1",
       "tips": [],
       "transactions": []
     },
     "final_chain": {
       "genesis_block_fields": {
         "author": "0x0000000000000000000000000000000000000000",
-        "timestamp": "0x5d422b80"
+        "timestamp": "0x6723F7D1"
       },
       "state": {
-        "disable_block_rewards": true,
+        "disable_block_rewards": false,
         "dpos": {
           "deposit_delay": "0x10",
           "withdrawal_delay": "0x10",
-          "eligibility_balance_threshold": "0xd3c21bcecceda0000000",
+          "eligibility_balance_threshold": "0x152D02C7E14AF6800000",
           "genesis_state": {
-            "0xde2b1203d72d3549ee2f733b00b2789414c7cea5": {
-              "0xde2b1203d72d3549ee2f733b00b2789414c7cea5": "0xd3c21bcecceda0000000"
+            "0x7D351907D349211f94301bae7db5bFa421AA5937": {
+              "0x7D351907D349211f94301bae7db5bFa421AA5937": "0x2BBB829B2E2B88CC302B14000000"
+            },
+            "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": {
+              "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0xD3C21BCECCEDA1000000"
             }
           }
         },
@@ -138,7 +141,11 @@
           "disable_nonce_check": true
         },
         "genesis_balances": {
-          "0xde2b1203d72d3549ee2f733b00b2789414c7cea5": "0x1027e72f1f12813088000000"
+          "0x7D351907D349211f94301bae7db5bFa421AA5937": "0x2BBB829B2E2B88CC302B14000000",
+	        "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0xD3C21BCECCEDA1000000",
+          "0x5df3b8e6b96e59099d16252a55f87ac34767806c": "0x52B7D2DCC80CD2E4000000",
+          "0xd8211a92c86b88f20428b661e82249e2445fa93b": "0x52B7D2DCC80CD2E4000000",
+          "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0": "0x51E410C0F93FE543000000"
         }
       }
     },

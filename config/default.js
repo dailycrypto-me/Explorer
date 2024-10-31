@@ -1,5 +1,5 @@
 module.exports = {
-  nodeConfigPath: process.env.NODE_CONFIG_PATH || '/opt/daily/conf/daily.json',
+  nodeConfigPath: process.env.NODE_CONFIG_PATH || '/root/.daily/config.json',
   faucet: {
     enabled: process.env.NEXT_PUBLIC_FAUCET_ENABLED === 'false',
     maxUnconfirmed: Number(process.env.MAX_UNCONFIRMED) || 5000,
@@ -40,6 +40,6 @@ module.exports = {
   jobQueue: {
     maxConcurrency: 20,
     defaultConcurrency: 5,
-    db: { address: process.env.MONGO_URI || 'mongodb://localhost:27017/explorer' },
+    db: { address: process.env.MONGO_URI || 'mongodb://0.0.0.0:27017/explorer' },
   },
 };
